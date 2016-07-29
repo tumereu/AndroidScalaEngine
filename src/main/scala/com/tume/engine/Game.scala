@@ -1,7 +1,8 @@
 package com.tume.engine
 
-import android.graphics.Canvas
-import com.tume.engine.effect.EffectSystem
+import android.graphics.{Paint, Canvas}
+import android.view.View
+import com.tume.engine.effect.{RenderableEffect, EffectSystem}
 import com.tume.engine.gui.{UISystem, UIView}
 import com.tume.engine.gui.event.{UIEvent, UIEventListener}
 import com.tume.engine.model.Border.Border
@@ -19,6 +20,8 @@ trait Game extends UIEventListener {
   var uiSystem : UISystem = null
   var effectSystem: EffectSystem = null
 
+  var gameView: GameView = null
+
   var background : Background = ColorBackground(0xFF000000)
 
   def gameBounds: Option[Rect] = Some(Rect(0, 0, DisplayUtils.screenWidth, DisplayUtils.screenHeight))
@@ -33,17 +36,17 @@ trait Game extends UIEventListener {
       if (gameBounds.isDefined) {
         val bb = o.boundingBox
         var borders = HashMap[Border, Boolean]()
-        borders += Border.Left -> (o.x - bb.width / 2 < gameBounds.get.left)
-        borders += Border.Right -> (o.x + bb.width / 2 > gameBounds.get.right)
-        borders += Border.Top -> (o.y - bb.height / 2 < gameBounds.get.top)
-        borders += Border.Bottom -> (o.y + bb.height / 2 > gameBounds.get.bottom)
+        borders += Border.Left -> (o.loc.x - bb.width / 2 < gameBounds.get.left)
+        borders += Border.Right -> (o.loc.x + bb.width / 2 > gameBounds.get.right)
+        borders += Border.Top -> (o.loc.y - bb.height / 2 < gameBounds.get.top)
+        borders += Border.Bottom -> (o.loc.y + bb.height / 2 > gameBounds.get.bottom)
         if (borders.values.exists(b => b)) {
           o.onBorderCollision(borders, gameBounds.get)
           borders = HashMap[Border, Boolean]()
-          borders += Border.Left -> (o.x + bb.width / 2 < gameBounds.get.left)
-          borders += Border.Right -> (o.x - bb.width / 2 > gameBounds.get.right)
-          borders += Border.Top -> (o.y + bb.height / 2 < gameBounds.get.top)
-          borders += Border.Bottom -> (o.y - bb.height / 2 > gameBounds.get.bottom)
+          borders += Border.Left -> (o.loc.x + bb.width / 2 < gameBounds.get.left)
+          borders += Border.Right -> (o.loc.x - bb.width / 2 > gameBounds.get.right)
+          borders += Border.Top -> (o.loc.y + bb.height / 2 < gameBounds.get.top)
+          borders += Border.Bottom -> (o.loc.y - bb.height / 2 > gameBounds.get.bottom)
           if (borders.values.exists(b => b)) {
             o.onBorderExit(borders, gameBounds.get)
           }
@@ -68,10 +71,9 @@ trait Game extends UIEventListener {
   }
 
   def render(canvas: Canvas) = {
-    this.background.render(canvas)
     for (o <- objects) {
       canvas.save()
-      canvas.translate(o.x, o.y)
+      canvas.translate(o.loc.x, o.loc.y)
       o.render(canvas)
       canvas.restore()
     }
@@ -80,6 +82,10 @@ trait Game extends UIEventListener {
   def addObject(sGObject: SGObject): Unit = {
     this.objects = this.objects :+ sGObject
     sGObject.onAdd(this)
+  }
+
+  def addEffect(renderableEffect: RenderableEffect): Unit = {
+    effectSystem.add(renderableEffect)
   }
 
   def init()

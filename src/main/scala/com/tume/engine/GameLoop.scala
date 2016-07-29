@@ -31,9 +31,11 @@ class GameLoop(val game: Game, val view: GameView) extends Runnable {
           val fixedDelta = 1F / FPS
           update(fixedDelta)
           if (canvas != null) {
+            game.background.render(canvas)
+            effects.renderBelow(canvas)
             game.render(canvas)
             ui.render(canvas)
-            effects.render(canvas)
+            effects.renderAbove(canvas)
           }
           val diff = System.currentTimeMillis() - frameStart
           val sleepTime = FRAME_LENGTH - diff

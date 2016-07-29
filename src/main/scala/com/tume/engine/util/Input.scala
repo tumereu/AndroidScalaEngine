@@ -1,7 +1,7 @@
 package com.tume.engine.util
 
-import android.util.Log
 import android.view.MotionEvent
+import com.tume.engine.model.Vec2
 
 import scala.collection.mutable
 
@@ -10,15 +10,15 @@ import scala.collection.mutable
   */
 object Input {
 
-  private var currentTouchLocation : Option[(Float, Float)] = None
-  private var lastEventLoc = (-1f, -1f)
+  private var currentTouchLocation : Option[Vec2] = None
+  private var lastEventLoc = Vec2(-1, -1)
   private var touchedThisFrame = false
   private var upThisFrame = false
   private var events = mutable.Buffer[MotionEvent]()
 
-  def touchLocation : Option[(Float, Float)] = currentTouchLocation
-  def touchX : Option[Float] = if (touchLocation.isDefined) Some(touchLocation.get._1) else None
-  def touchY : Option[Float] = if (touchLocation.isDefined) Some(touchLocation.get._2) else None
+  def touchLocation : Option[Vec2] = currentTouchLocation
+  def touchX : Option[Float] = if (touchLocation.isDefined) Some(touchLocation.get.x) else None
+  def touchY : Option[Float] = if (touchLocation.isDefined) Some(touchLocation.get.y) else None
   def lastTouchLocation = lastEventLoc
   def touchStartedThisFrame = touchedThisFrame
   def touchEndedThisFrame = upThisFrame
@@ -62,7 +62,7 @@ object Input {
       case MotionEvent.ACTION_MOVE => updatePointer(event)
       case _ =>
     }
-    lastEventLoc = (event.getX, event.getY)
+    lastEventLoc = Vec2(event.getX, event.getY)
   }
 
   private def resetPointer(): Unit = {
@@ -71,7 +71,7 @@ object Input {
   }
 
   private def updatePointer(event: MotionEvent): Unit = {
-    this.currentTouchLocation = Some((event.getX, event.getY))
+    this.currentTouchLocation = Some(Vec2(event.getX, event.getY))
   }
 
   def isTouchInside(x: Float, y: Float, width: Float, height: Float): Boolean = {
@@ -83,7 +83,7 @@ object Input {
   }
 
   def wasTouchInside(x: Float, y: Float, width: Float, height: Float): Boolean = {
-      lastTouchLocation._1 >= x && lastTouchLocation._1 <= x + width && lastTouchLocation._2 >= y && lastTouchLocation._2 <= y + height
+      lastTouchLocation.x >= x && lastTouchLocation.x <= x + width && lastTouchLocation.y >= y && lastTouchLocation.y <= y + height
   }
 
 }

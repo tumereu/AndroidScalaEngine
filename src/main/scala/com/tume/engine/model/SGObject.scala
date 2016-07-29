@@ -10,8 +10,8 @@ import com.tume.engine.util.Calc
   */
 abstract class SGObject {
 
-  var x, y = 0F
-  var xSpeed, ySpeed = 0F
+  var loc = Vec2(0f, 0f)
+  var speed = Vec2(0f, 0f)
 
   var dampening = 1f
 
@@ -23,19 +23,12 @@ abstract class SGObject {
   def boundingBox : Shape
 
   def update(delta: Float) = {
-    x += xSpeed * delta
-    y += ySpeed * delta
-    val damp = Calc.pow(dampening, delta)
-    xSpeed *= damp
-    ySpeed *= damp
+    loc += speed * delta
+    speed *= Calc.pow(dampening, delta)
   }
-
-  def movementSpeed = Math.sqrt(xSpeed*xSpeed+ySpeed*ySpeed).toFloat
-  def movementAngle : Float = Calc.atan2((xSpeed, ySpeed))
-
-  def applyForce(force: (Float, Float)) = {
-    this.xSpeed += force._1 / mass
-    this.ySpeed += force._2 / mass
+  
+  def applyForce(force: Vec2) = {
+    this.speed += force / mass
   }
 
   def render(c: Canvas)
@@ -47,28 +40,28 @@ abstract class SGObject {
   def onBorderExit(borders: Map[Border, Boolean], bounds: Rect) = { }
 
   def bounceFrom(borders: Map[Border, Boolean], bounds: Rect): Unit = {
-    if ((borders(Border.Left) && xSpeed < 0) || (borders(Border.Right) && xSpeed > 0)) {
-      xSpeed = -xSpeed
-      if (borders(Border.Left)) x = bounds.left + boundingBox.width / 2
-      if (borders(Border.Right)) x = bounds.right - boundingBox.width / 2
+    if ((borders(Border.Left) && speed.x < 0) || (borders(Border.Right) && speed.x > 0)) {
+      speed = speed.invertX
+      if (borders(Border.Left)) loc = Vec2(bounds.left + boundingBox.width / 2, loc.y)
+      if (borders(Border.Right)) loc = Vec2(bounds.right - boundingBox.width / 2, loc.y)
     }
-    if ((borders(Border.Top) && ySpeed < 0) || (borders(Border.Bottom) && ySpeed > 0)) {
-      ySpeed = -ySpeed
-      if (borders(Border.Top)) y = bounds.top + boundingBox.height / 2
-      if (borders(Border.Bottom)) y = bounds.bottom - boundingBox.height / 2
+    if ((borders(Border.Top) && speed.y < 0) || (borders(Border.Bottom) && speed.y > 0)) {
+      speed = speed.invertY
+      if (borders(Border.Top)) loc = Vec2(loc.x, bounds.top + boundingBox.height / 2)
+      if (borders(Border.Bottom)) loc = Vec2(loc.x, bounds.bottom - boundingBox.height / 2)
     }
   }
 
   def stopTo(borders: Map[Border, Boolean], bounds: Rect): Unit = {
-    if ((borders(Border.Left) && xSpeed < 0) || (borders(Border.Right) && xSpeed > 0)) {
-      xSpeed = 0
-      if (borders(Border.Left)) x = bounds.left + boundingBox.width / 2
-      if (borders(Border.Right)) x = bounds.right - boundingBox.width / 2
+    if ((borders(Border.Left) && speed.x < 0) || (borders(Border.Right) && speed.x > 0)) {
+      speed = Vec2(0, speed.y)
+      if (borders(Border.Left)) loc = Vec2(bounds.left + boundingBox.width / 2, loc.y)
+      if (borders(Border.Right)) loc = Vec2(bounds.right - boundingBox.width / 2, loc.y)
     }
-    if ((borders(Border.Top) && ySpeed < 0) || (borders(Border.Bottom) && ySpeed > 0)) {
-      ySpeed = 0
-      if (borders(Border.Top)) y = bounds.top + boundingBox.height / 2
-      if (borders(Border.Bottom)) y = bounds.bottom - boundingBox.height / 2
+    if ((borders(Border.Top) && speed.y < 0) || (borders(Border.Bottom) && speed.y > 0)) {
+      speed = Vec2(speed.x, 0)
+      if (borders(Border.Top)) loc = Vec2(loc.x, bounds.top + boundingBox.height / 2)
+      if (borders(Border.Bottom)) loc = Vec2(loc.x, bounds.bottom - boundingBox.height / 2)
     }
   }
 

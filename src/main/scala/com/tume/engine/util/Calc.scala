@@ -1,5 +1,7 @@
 package com.tume.engine.util
 
+import com.tume.engine.model.{Rect, Vec2}
+
 /**
   * Created by tume on 7/7/16.
   */
@@ -14,6 +16,10 @@ object Calc {
   def rand[T](seq: Seq[T]): T = seq(rand(seq.size).toInt)
 
   def randAngle = rand(PI * 2)
+
+  def randVec(left: Float, top: Float, right: Float, bottom: Float) : Vec2 = Vec2(rand(left, right), rand(top, bottom))
+  def randVec(maxX: Float, maxY: Float) : Vec2 = randVec(0, maxX, 0, maxY)
+  def randVec(rect: Rect): Vec2 = randVec(rect.left, rect.top, rect.right, rect.bottom)
 
   def sin(angle: Float) = Math.sin(angle).toFloat
   def cos(angle: Float) = Math.cos(angle).toFloat

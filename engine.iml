@@ -105,5 +105,6 @@
     <orderEntry type="library" exported="" name="support-vector-drawable-23.3.0" level="project" />
     <orderEntry type="library" exported="" name="animated-vector-drawable-23.3.0" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-23.3.0" level="project" />
+    <orderEntry type="library" name="scala-sdk-2.11.8 (2)" level="application" />
   </component>
 </module>
