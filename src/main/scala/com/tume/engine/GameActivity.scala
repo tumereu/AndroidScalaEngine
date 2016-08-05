@@ -18,12 +18,12 @@ abstract class GameActivity extends AppCompatActivity {
 
   override protected def onCreate(savedInstance: Bundle): Unit = {
     super.onCreate(savedInstance)
-    requestWindowFeature(Window.FEATURE_NO_TITLE);
+    requestWindowFeature(Window.FEATURE_NO_TITLE)
     requestWindowFeature(Window.FEATURE_ACTION_BAR)
     getSupportActionBar.hide()
-    getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-      WindowManager.LayoutParams.FLAG_FULLSCREEN);
-    getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+    getWindow.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+      WindowManager.LayoutParams.FLAG_FULLSCREEN)
+    getWindow.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
     setContentView(R.layout.game_activity)
     val gameView = findViewById(R.id.gameView)

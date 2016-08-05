@@ -1,6 +1,7 @@
 package com.tume.engine.effect
 
 import android.graphics.{Paint, Canvas}
+import com.tume.engine.anim.{LoopType, QuinticOutAnim, Animation, EmptyAnim}
 import com.tume.engine.model.SGObject
 import com.tume.engine.util.Calc
 
@@ -16,13 +17,15 @@ class CrossHair(sGObject: SGObject) extends RenderableEffect {
 
   var targetLoc = sGObject.loc
   var startLoc = sGObject.loc
-  var homingTime = 0f
-  def currentLoc = startLoc.lerp(targetLoc, homingTime)
+  var homingAnim : Animation = EmptyAnim()
+  def currentLoc = startLoc.lerp(targetLoc, homingAnim.value)
 
   var radiusScale = 1f
 
   var rotation = 0f
   var rotSpeed = Calc.PI / 4
+
+  var fadeOut = false
 
   // If the crosshair should persist in added objects and receive updates even though it would otherwise be removed
   var persist = false
@@ -32,21 +35,18 @@ class CrossHair(sGObject: SGObject) extends RenderableEffect {
     if (target.isDefined && target.get.isRemovable) {
       target = None
     }
-    if (target.isDefined) {
-      targetLoc = target.get.loc
-    } else {
+    if (target.isDefined) targetLoc = target.get.loc
+    if (target.isEmpty || fadeOut) {
       radiusScale -= delta * 5
+      if (radiusScale <= 0) target = None
     }
-    homingTime = Calc.clamp(homingTime + delta * 4, 0f, 1f)
   }
 
   def radius = rad * radiusScale
   def reset(newTarget: SGObject): Unit = {
+    fadeOut = false
     startLoc = currentLoc
-    homingTime = 0f
-    if (target.isEmpty) {
-      homingTime = 1f
-    }
+    homingAnim = if (target.isDefined) QuinticOutAnim(0.75f, LoopType.Once) else EmptyAnim()
     target = Option(newTarget)
     radiusScale = 1f
   }

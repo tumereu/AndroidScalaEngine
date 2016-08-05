@@ -9,6 +9,7 @@ object Calc {
   def PI = Math.PI.toFloat
 
   def clamp(t: Float, min: Float, max: Float): Float = if (t > max) max else if (t < min) min else t
+  def min(i: Int, j: Int): Int = if (i < j) i else j
 
   def rand: Float = Math.random().toFloat
   def rand(factor: Float): Float = rand * factor

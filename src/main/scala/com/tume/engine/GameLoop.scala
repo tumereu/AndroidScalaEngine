@@ -2,8 +2,7 @@ package com.tume.engine
 
 import android.graphics.Canvas
 import android.util.Log
-import com.tume.engine.gui.UISystem
-import com.tume.engine.util.Input
+import com.tume.engine.anim.Animations
 
 /**
   * Created by tume on 5/11/16.
@@ -58,6 +57,7 @@ class GameLoop(val game: Game, val view: GameView) extends Runnable {
 
   private def update(delta: Float): Unit = {
     Input.onFrameChange()
+    Animations.update(delta)
     ui.update(delta)
     game.update(delta)
     effects.update(delta)

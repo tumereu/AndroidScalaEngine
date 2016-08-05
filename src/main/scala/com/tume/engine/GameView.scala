@@ -1,9 +1,9 @@
 package com.tume.engine
 
 import android.content.Context
-import android.util.AttributeSet
+import android.util.{Log, AttributeSet}
 import android.view.{View, SurfaceHolder, MotionEvent, SurfaceView}
-import com.tume.engine.util.{DisplayUtils, Input}
+import com.tume.engine.util.DisplayUtils
 
 class GameView(ctx: Context, atSet: AttributeSet) extends SurfaceView(ctx, atSet) {
   val surfaceHolder = getHolder

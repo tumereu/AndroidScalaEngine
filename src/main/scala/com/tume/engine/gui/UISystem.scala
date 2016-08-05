@@ -1,8 +1,8 @@
 package com.tume.engine.gui
 
 import android.graphics.Canvas
+import com.tume.engine.Input
 import com.tume.engine.gui.event.UIEventListener
-import com.tume.engine.util.Input
 
 /**
   * Created by tume on 5/12/16.
@@ -30,23 +30,23 @@ class UISystem {
       cmp.toggleVisibility(false)
       cmp.init()
     }
-    if (!views.isEmpty) {
+    if (views.nonEmpty) {
       this.show(views.head.name)
     }
   }
 
   def update(delta: Float): Unit = {
     var toBeRemoved : Option[UIComponent] = None
-    if (Input.touchStartedThisFrame && !this.activePopups.isEmpty) {
+    if (activePopups.nonEmpty) {
       val a = this.activePopups.head
-      if (!Input.isTouchInside(a.x, a.y, a.width, a.height)) {
+      if (!Input.touchStarted(a.boundingBox)) {
         toBeRemoved = Some(a)
       }
     }
     for (cmp <- components.values.flatten) {
       cmp.update(delta)
     }
-    toBeRemoved.foreach(removePopup(_))
+    toBeRemoved.foreach(removePopup)
   }
 
   def render(canvas: Canvas): Unit = {
