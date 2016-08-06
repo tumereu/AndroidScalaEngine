@@ -83,7 +83,7 @@ object LoopType extends Enumeration {
   type LoopType = Value
   val Repeat, Reverse, Once = Value
 }
-case class EmptyAnim() extends Animation(1, LoopType.Repeat) {
+case class EmptyAnim() extends Animation(1, LoopType.Once) {
   override def v = 1f
   override def isRemovable = true
 }

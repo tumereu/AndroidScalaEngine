@@ -69,7 +69,7 @@ abstract class UIComponent {
 
   def interactable = visible && enabled && uiSystem.isReceivingInput(this)
 
-  def update(delta: Double): Unit = {
+  def update(delta: Float): Unit = {
     if (Input.tap(boundingBox)) {
       onClick()
     }
@@ -95,7 +95,7 @@ abstract class UIComponent {
     }
   }
 
-  def boundingBox : Shape = Rect(x, y, width, height)
+  def boundingBox : Shape = Rect(x, y, x + width, y + height)
 
   def layer = 0
 

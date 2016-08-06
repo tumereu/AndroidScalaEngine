@@ -37,6 +37,7 @@ object Input  {
     * If a shape was tapped this frame, that is a touch began and ended both inside that shape's borders.
     */
   def tap(shape: Shape) : Boolean = taps.exists(p => shape.contains(p.startLoc.get) && shape.contains(p.loc))
+  def tap : Boolean = taps.nonEmpty
 
   /**
     * Returns true if a new touch was started inside this shape this frame.
