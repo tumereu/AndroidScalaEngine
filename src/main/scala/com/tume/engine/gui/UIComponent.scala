@@ -1,9 +1,9 @@
 package com.tume.engine.gui
 
-import android.graphics.{Bitmap, Canvas, Paint}
+import android.graphics._
 import com.tume.engine.Input
 import com.tume.engine.gui.event.{UIEvent, UIEventListener}
-import com.tume.engine.model.{Shape, Rect}
+import com.tume.engine.model.{Vec2, Shape, Rect}
 import com.tume.engine.util.{Bitmaps, DisplayUtils}
 
 /**
@@ -18,8 +18,6 @@ abstract class UIComponent {
   var view: Option[String] = None
   var listener: Option[UIEventListener] = None
   var uiSystem: UISystem = null
-
-  var color1, color2, color3, color4: Int = -1
 
   var enabled = true
   var visible = true
@@ -130,6 +128,7 @@ object UITheme {
   val borderPaintPanel = create(0xff339999, Paint.Style.FILL)
 
   val fillPaintNormal = create(0xffAA6600, Paint.Style.FILL)
+  val fillPaintNormalBright = create(0xffCC9933, Paint.Style.FILL)
   val fillPaintDisabled = create(0xff898989, Paint.Style.FILL)
   val fillPaintPressed = create(0xff996699, Paint.Style.FILL)
   val fillPaintPanel = create(0xff606060, Paint.Style.FILL)
@@ -145,5 +144,15 @@ object UITheme {
     paint.setStrokeWidth(strokeWidth)
     paint.setAntiAlias(antialias)
     paint
+  }
+
+  def shade(topColor: Int, botColor: Int, topLeft: Vec2, botRight: Vec2): Paint = {
+    val p = create(0xFFFFFFFF, Paint.Style.FILL)
+    p.setShader(new LinearGradient(topLeft.x, topLeft.y, topLeft.x, botRight.y, topColor, botColor, Shader.TileMode.MIRROR))
+    p
+  }
+
+  def shade(topColor: Int, botColor: Int, u: UIComponent): Paint = {
+    shade(topColor, botColor, Vec2(0, 0), Vec2(0, u.height))
   }
 }

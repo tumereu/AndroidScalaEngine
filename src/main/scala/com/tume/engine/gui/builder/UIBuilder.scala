@@ -1,5 +1,6 @@
-package com.tume.engine.gui
+package com.tume.engine.gui.builder
 
+import com.tume.engine.gui.UIComponent
 import com.tume.engine.util.DisplayUtils
 
 /**
@@ -149,31 +150,12 @@ class UIBuilder(val uiComponent: UIComponent) {
     this
   }
 
-  def color1(int: Int) : UIBuilder = {
-    uiComponent.color1 = int
-    this
-  }
-
-  def color2(int: Int) : UIBuilder = {
-    uiComponent.color2 = int
-    this
-  }
-
-  def color3(int: Int) : UIBuilder = {
-    uiComponent.color3 = int
-    this
-  }
-
-  def color4(int: Int) : UIBuilder = {
-    uiComponent.color4 = int
-    this
-  }
-
   def resolve = uiComponent
-
 }
 object UIBuilder {
   def apply(uIComponent: UIComponent) : UIBuilder = new UIBuilder(uIComponent)
+  def button = new UIButtonBuilder()
+  def progressBar = new UIProgressBarBuilder()
 }
 object UIBuilderSettings {
   var padding = Math.round(DisplayUtils.scale)

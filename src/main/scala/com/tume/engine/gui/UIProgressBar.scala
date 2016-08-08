@@ -15,6 +15,8 @@ class UIProgressBar extends UIComponent {
   private var overFlows = 0
   private var paint: Paint = null
 
+  var mainColor, mainColorBright, tickColor, tickColorBright: Int = -1
+
   private var ticks = Vector.empty[ProgressBarTick]
 
   override def render(canvas: Canvas): Unit = {
@@ -39,12 +41,12 @@ class UIProgressBar extends UIComponent {
   override def init(): Unit = {
     paint = new Paint()
     paint.setStyle(Paint.Style.FILL)
-    paint.setShader(new LinearGradient(0, 0, 0, height / 2, color1, color2, Shader.TileMode.MIRROR))
+    paint.setShader(new LinearGradient(0, 0, 0, height / 2, mainColor, mainColorBright, Shader.TileMode.MIRROR))
   }
 
   def secondaryPaint(alpha: Int): Paint = {
-    val c1 = color3 & 0x00ffffff | (alpha << 24)
-    val c2 = color4 & 0x00ffffff | (alpha << 24)
+    val c1 = tickColor & 0x00ffffff | (alpha << 24)
+    val c2 = tickColorBright & 0x00ffffff | (alpha << 24)
     val pa = new Paint()
     pa.setStyle(Paint.Style.FILL)
     pa.setShader(new LinearGradient(0, 0, 0, height / 2, c1, c2, Shader.TileMode.MIRROR))

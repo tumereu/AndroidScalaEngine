@@ -22,4 +22,9 @@ object Rand {
   def vec(maxX: Float, maxY: Float) : Vec2 = vec(0, maxX, 0, maxY)
   def vec(rect: Rect): Vec2 = vec(rect.left, rect.top, rect.right, rect.bottom)
 
+  def circle : Vec2 = {
+    val dir = Calc.dir(Rand.angle)
+    Vec2(dir._1, dir._2)
+  }
+
 }

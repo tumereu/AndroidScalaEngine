@@ -1,7 +1,5 @@
 package com.tume.engine.util
 
-import com.tume.engine.model.{Rect, Vec2}
-
 /**
   * Created by tume on 7/7/16.
   */
@@ -10,6 +8,11 @@ object Calc {
 
   def clamp(t: Float, min: Float, max: Float): Float = if (t > max) max else if (t < min) min else t
   def min(i: Int, j: Int): Int = if (i < j) i else j
+  def min(i: Float, j: Float): Float = if (i < j) i else j
+  def max(i: Int, j: Int): Int = if (i > j) i else j
+  def max(i: Float, j: Float): Float = if (i > j) i else j
+
+  def round(f: Float) = Math.round(f)
 
   def sin(angle: Float) = Math.sin(angle).toFloat
   def cos(angle: Float) = Math.cos(angle).toFloat

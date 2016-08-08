@@ -101,6 +101,12 @@ case class EmptyAnim() extends Animation(1, LoopType.Once) {
 case class LinearAnim(dur: Float, lt: LoopType = LoopType.Once) extends Animation(dur, lt) {
   override def v = t
 }
+case class ClampedLinearSpikeAnim(dur: Float, fac: Float, lt: LoopType = LoopType.Once) extends Animation(dur, lt) {
+  override def v = {
+    if (t < 0.5f) Calc.min(t * 2 * fac, 1f)
+    else Calc.min((1f - (t - 0.5f) * 2) * fac, 1f)
+  }
+}
 case class QuinticOutAnim(dur: Float, lt: LoopType = LoopType.Once) extends Animation(dur, lt) {
   override def v = Calc.pow(t - 1f, 5f) + 1
 }
