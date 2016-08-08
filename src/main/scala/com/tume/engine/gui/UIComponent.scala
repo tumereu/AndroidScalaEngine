@@ -70,10 +70,10 @@ abstract class UIComponent {
   def interactable = visible && enabled && uiSystem.isReceivingInput(this)
 
   def update(delta: Float): Unit = {
-    if (Input.tap(boundingBox)) {
+    if (Input.tap(boundingBox) && visible) {
       onClick()
     }
-    if (Input.touching(boundingBox)) {
+    if (Input.touching(boundingBox) && visible) {
       this.innerState = Pressed
       UIFocus.currentFocus = Some(this)
       if (Input.touchStarted(boundingBox)) {

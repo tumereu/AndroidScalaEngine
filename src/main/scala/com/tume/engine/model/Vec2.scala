@@ -1,6 +1,6 @@
 package com.tume.engine.model
 
-import com.tume.engine.util.Calc
+import com.tume.engine.util.{Rand, Calc}
 
 /**
   * Created by tume on 7/24/16.
@@ -49,7 +49,7 @@ object Vec2 {
 }
 object Vec2R {
   def insideUnitCircle : Vec2 = {
-    val dir = Calc.dir(Calc.randAngle)
+    val dir = Calc.dir(Rand.angle)
     Vec2(dir._1, dir._2)
   }
 }

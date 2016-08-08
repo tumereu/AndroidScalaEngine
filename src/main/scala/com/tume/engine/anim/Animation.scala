@@ -1,8 +1,7 @@
 package com.tume.engine.anim
 
-import android.util.Log
 import com.tume.engine.anim.LoopType.LoopType
-import com.tume.engine.util.{Calc, Timer}
+import com.tume.engine.util.{L, Calc, Timer}
 
 /**
   * Created by tume on 8/1/16.
@@ -10,6 +9,8 @@ import com.tume.engine.util.{Calc, Timer}
 abstract class Animation(private[anim] val duration: Float, private[anim] val loopType: LoopType) {
 
   var onFinish = () => {}
+
+  val id = java.util.UUID.randomUUID().hashCode()
 
   Animations.register(this)
   import com.tume.engine.anim.LoopType._
@@ -44,6 +45,12 @@ abstract class Animation(private[anim] val duration: Float, private[anim] val lo
     Animations.register(this)
   }
 
+  override def hashCode = id
+  override def equals(o: Any) : Boolean = o match {
+    case animation: Animation => animation.id == this.id
+    case _ => false
+  }
+
   private def animationFinished(): Unit = {
     loopType match {
       case Once => finished = true
@@ -57,6 +64,7 @@ abstract class Animation(private[anim] val duration: Float, private[anim] val lo
   private[anim] def v: Float
 
   def value : Float = if (reversed) 1f - v else v
+  def value(f: Float) : Float = value * f
   def value(i: Int): Int = (value * i).toInt
   def reverse: Animation = {
     this.reversed = true
@@ -67,8 +75,11 @@ abstract class Animation(private[anim] val duration: Float, private[anim] val lo
   private[anim] def isRemovable = finished
 
 }
+object Animation {
+  def apply(): Animation = EmptyAnim()
+}
 object Animations {
-  protected var anims = Vector.empty[Animation]
+  protected var anims = Set.empty[Animation]
 
   def update(delta: Float): Unit = {
     anims.foreach(_.update(delta))
@@ -76,7 +87,7 @@ object Animations {
   }
 
   def register(animation: Animation): Unit = {
-    anims = anims.filterNot(_ == animation) :+ animation
+    anims = anims + animation
   }
 }
 object LoopType extends Enumeration {
@@ -87,9 +98,9 @@ case class EmptyAnim() extends Animation(1, LoopType.Once) {
   override def v = 1f
   override def isRemovable = true
 }
-case class LinearAnim(dur: Float, lt: LoopType) extends Animation(dur, lt) {
+case class LinearAnim(dur: Float, lt: LoopType = LoopType.Once) extends Animation(dur, lt) {
   override def v = t
 }
-case class QuinticOutAnim(dur: Float, lt: LoopType) extends Animation(dur, lt) {
+case class QuinticOutAnim(dur: Float, lt: LoopType = LoopType.Once) extends Animation(dur, lt) {
   override def v = Calc.pow(t - 1f, 5f) + 1
 }

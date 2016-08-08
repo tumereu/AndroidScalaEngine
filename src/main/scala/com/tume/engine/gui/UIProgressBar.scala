@@ -2,7 +2,7 @@ package com.tume.engine.gui
 
 import android.graphics._
 import android.util.Log
-import com.tume.engine.util.{D, Calc}
+import com.tume.engine.util.{L, Calc}
 
 /**
   * Created by tume on 5/13/16.
@@ -24,7 +24,7 @@ class UIProgressBar extends UIComponent {
     }
     canvas.drawRoundRect(0, 0, width * paintProgress, height, cornerRadius, cornerRadius, paint)
     if (UIFocus.currentFocus.contains(this)) {
-      val text = numerator + "/" + denominator
+      val text = "" + (if (rawProgress.isDefined) (rawProgress.get * 100).toInt else numerator + "/" + denominator)
       val pa = new Paint()
       pa.setTextSize(this.height / 2)
       pa.setColor(0xff000000)

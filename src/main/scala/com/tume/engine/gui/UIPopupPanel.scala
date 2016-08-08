@@ -56,8 +56,10 @@ class UIPopupPanel extends UIComponent {
   }
 
   def onToBeRemoved(): Unit = {
-    anim = QuinticOutAnim(0.3f, LoopType.Once).reverse
-    isRemoving = true
+    if (this.anim.isFinished) {
+      anim = QuinticOutAnim(0.3f, LoopType.Once).reverse
+      isRemoving = true
+    }
   }
 
   def isReadyToBeRemoved: Boolean = anim.isFinished && isRemoving
