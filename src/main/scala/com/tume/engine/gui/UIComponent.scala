@@ -1,10 +1,11 @@
 package com.tume.engine.gui
 
+import android.graphics
 import android.graphics._
 import com.tume.engine.Input
 import com.tume.engine.gui.event.{UIEvent, UIEventListener}
-import com.tume.engine.model.{Vec2, Shape, Rect}
-import com.tume.engine.util.{Bitmaps, DisplayUtils}
+import com.tume.engine.model.{RichString, Vec2, Shape, Rect}
+import com.tume.engine.util._
 
 /**
   * Created by tume on 5/12/16.
@@ -18,24 +19,72 @@ abstract class UIComponent {
   var listener: Option[UIEventListener] = None
   var uiSystem: UISystem = null
 
+  var tooltip = Option[String](null)
+  def tooltipWidth = DisplayUtils.screenWidth * 2 / 3
+
   var enabled = true
   var visible = true
+  private var tooltipRequested = false
+  def shouldRenderTooltip = tooltipRequested && tooltip.isDefined
 
   var x, y, width, height = 0
 
   def render(canvas: Canvas) : Unit
   def init(): Unit = {}
 
+  def renderTooltip(canvas: Canvas): Unit = {
+    val breaked = LineBreak.break(tooltip.get, 30)
+    var w = 0f
+    var h = DisplayUtils.scale * 9
+    val th = breaked.foldLeft(0)((n: Int, s: String) => {
+      val bounds = new graphics.Rect()
+      UITheme.tooltipTextPaint.getTextBounds(s, 0, s.length, bounds)
+      Calc.max(n, bounds.height())
+    })
+    for (s2 <- breaked) {
+      val bounds = new graphics.Rect()
+      UITheme.tooltipTextPaint.getTextBounds(s2, 0, s2.length, bounds)
+      w = Calc.max(bounds.width(), w)
+      h += th + DisplayUtils.scale
+    }
+
+    w += DisplayUtils.scale * 16
+
+    val b = Bitmap.createBitmap(w.toInt + 1, h.toInt + 1, Bitmap.Config.ARGB_8888)
+    val c = new Canvas(b)
+
+    var topLeft = Vec2(x + width / 2, y + height / 2)
+    if (topLeft.x + w > DisplayUtils.screenWidth) {
+      topLeft -= Vec2(topLeft.x + w - DisplayUtils.screenWidth, 0)
+    }
+    if (topLeft.y + h > DisplayUtils.screenHeight) {
+      topLeft -= Vec2(0, topLeft.y + h - DisplayUtils.screenHeight)
+    }
+    val os = DisplayUtils.scale * 2
+    c.drawRoundRect(0, 0, w, h, UITheme.cornerRadius, UITheme.cornerRadius, UITheme.tooltipBorderPaint)
+    c.drawRoundRect(os, os, w - os, h - os, UITheme.cornerRadius, UITheme.cornerRadius, UITheme.tooltipFillPaint)
+    var counter = 1
+    for (s <- breaked) {
+      c.drawText(s, DisplayUtils.scale * 7, DisplayUtils.scale * (counter + 2) + th * counter, UITheme.tooltipTextPaint)
+      counter += 1
+    }
+
+    canvas.drawBitmap(b, topLeft.x, topLeft.y, UITheme.tooltipBitmapPaint)
+  }
+
   def state : UIState = {
     if (!visible) {
+      tooltipRequested = false
       Hidden
     } else if (!enabled) {
+      tooltipRequested = false
       Disabled
     } else {
       if (this.innerState == Normal) {
         if (UIFocus.currentFocus.contains(this)) {
           Focused
         } else {
+          tooltipRequested = false
           Normal
         }
       } else {
@@ -43,7 +92,6 @@ abstract class UIComponent {
       }
     }
   }
-
 
   def toggleVisibility(boolean: Boolean): Unit = {
     this.visible = boolean
@@ -71,6 +119,9 @@ abstract class UIComponent {
       }
     } else {
       this.innerState = Normal
+    }
+    if (Input.longPress(boundingBox)) {
+      tooltipRequested = true
     }
   }
 
@@ -124,6 +175,11 @@ object UITheme {
   val fillPaintDisabled = create(0xff898989, Paint.Style.FILL)
   val fillPaintPressed = create(0xff996699, Paint.Style.FILL)
   val fillPaintPanel = create(0xff606060, Paint.Style.FILL)
+
+  val tooltipBorderPaint = create(0xffffffff, Paint.Style.FILL)
+  val tooltipFillPaint = create(0xff555555, Paint.Style.FILL)
+  val tooltipTextPaint = { val p=create(0xffffffff, strokeWidth = 2); p.setTextSize(DisplayUtils.scale * 15); p }
+  val tooltipBitmapPaint = { val p = create(0xffffffff, strokeWidth = 2); p.setAlpha(200); p}
 
   val textPaint = create(0xffaaceaa)
   val labelPaint = create(0xff000000)

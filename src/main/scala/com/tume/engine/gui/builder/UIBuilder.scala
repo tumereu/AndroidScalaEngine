@@ -145,6 +145,11 @@ class UIBuilder(val uiComponent: UIComponent) {
     this
   }
 
+  def tooltip(string: String) : this.type = {
+    uiComponent.tooltip = Option(string)
+    this
+  }
+
   def resolve = uiComponent
 }
 object UIBuilder {

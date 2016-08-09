@@ -57,11 +57,14 @@ object Input  {
     */
   def hovering(shape: Shape) : Boolean = touchLocations.exists(p => shape.contains(p.loc))
 
+  def longPress(shape: Shape) : Boolean = longPresses.exists(p => shape.contains(p.loc) && shape.contains(p.startLoc.get))
+  def longPress() : Boolean = longPresses.nonEmpty
   /**
     * Return the smallest distance a quick tap that was performed this frame has to the given location
     * If no quick taps were performed, this returns None
     */
   def quickTapDistance(vec2: Vec2) : Option[Float] = distance(vec2, quickTaps.map(_.loc))
+
   def touchStartDistance(vec2: Vec2) : Option[Float] = distance(vec2, newPointers.map(_.loc))
 
   def touchesLifted = removedPointers.nonEmpty && touches.isEmpty
@@ -185,7 +188,7 @@ class Touch(i: Int) {
   var longPressTriggered = false
 
   def isQuickTap = System.currentTimeMillis() - createTime < 400
-  def isLongPress = System.currentTimeMillis() - createTime > 1000
+  def isLongPress = System.currentTimeMillis() - createTime > 700
   def isDrag = drag
 }
 class Drag(val start: Vec2, val end: Vec2) {

@@ -72,6 +72,7 @@ class UISystem {
         canvas.restore()
       }
     }
+    UIFocus.currentFocus.foreach(a => if(a.shouldRenderTooltip) a.renderTooltip(canvas))
   }
 
   def show(views: String*): Unit = {

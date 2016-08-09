@@ -12,3 +12,6 @@ case class RichString(val value: String, val color: Int) {
   def +(s: String): Vector[RichString] = Vector(this, RichString(s, color))
   def +(v: Vector[RichString]) = v :+ this
 }
+object RichString {
+  def apply() = Vector.empty[RichString]
+}
