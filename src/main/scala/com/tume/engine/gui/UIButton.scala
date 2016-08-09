@@ -13,6 +13,8 @@ class UIButton extends UIComponent {
   import com.tume.engine.gui.UIState._
 
   var cornerText = ""
+  var imageResource = -1
+  protected var image: Option[Bitmap] = None
 
   override def render(canvas: Canvas): Unit = {
     val fillPaint = this.state match {
@@ -27,8 +29,8 @@ class UIButton extends UIComponent {
     val b = DisplayUtils.scale * 2
     canvas.drawRoundRect(0, 0, width, height, UITheme.cornerRadius, UITheme.cornerRadius, borderPaint)
     canvas.drawRoundRect(b, b, width - b, height - b, UITheme.cornerRadius, UITheme.cornerRadius, fillPaint)
-    if (bitmap.isDefined) {
-      val b = bitmap.get
+    if (image.isDefined) {
+      val b = image.get
       canvas.drawBitmap(b, width / 2 - b.getScaledWidth(canvas) / 2, height / 2 - b.getScaledHeight(canvas) / 2, UITheme.bitmapPaint)
     }
     if (cornerText.length > 0) {
@@ -45,4 +47,12 @@ class UIButton extends UIComponent {
   }
 
   override def onClick(): Unit = onPress()
+
+  override def init(): Unit = {
+    super.init()
+    image = imageResource match {
+      case -1 => None
+      case x => Some(Bitmaps.get(x))
+    }
+  }
 }

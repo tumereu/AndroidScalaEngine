@@ -53,7 +53,7 @@ class UISystem {
         cmp.update(delta)
       } catch {
         case e: Exception => {
-          Log.e(getClass.toString, "Exception when updating ui component " + cmp.id.getOrElse(""), e)
+          Log.e(getClass.toString, "Exception when updating ui component " + cmp.id.getOrElse("") + " :: " + cmp.getClass.getSimpleName, e)
           System.exit(0)
         }
       }

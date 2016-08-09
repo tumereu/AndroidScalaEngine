@@ -13,7 +13,6 @@ abstract class UIComponent {
   import com.tume.engine.gui.UIState._
   protected var innerState = Normal
 
-  var drawable = -1
   var id : Option[String] = None
   var view: Option[String] = None
   var listener: Option[UIEventListener] = None
@@ -22,17 +21,10 @@ abstract class UIComponent {
   var enabled = true
   var visible = true
 
-  protected var bitmap: Option[Bitmap] = None
-
   var x, y, width, height = 0
 
   def render(canvas: Canvas) : Unit
-  def init(): Unit = {
-    bitmap = drawable match {
-      case -1 => None
-      case x => Some(Bitmaps.get(x))
-    }
-  }
+  def init(): Unit = {}
 
   def state : UIState = {
     if (!visible) {
@@ -134,6 +126,7 @@ object UITheme {
   val fillPaintPanel = create(0xff606060, Paint.Style.FILL)
 
   val textPaint = create(0xffaaceaa)
+  val labelPaint = create(0xff000000)
 
   val background = create(0xff666666, Paint.Style.FILL)
 
