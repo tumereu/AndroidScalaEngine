@@ -3,6 +3,7 @@ package com.tume.engine.gui
 import android.graphics.{Rect, Paint, Bitmap, Canvas}
 import android.util.Log
 import com.tume.engine.gui.event.ButtonEvent
+import com.tume.engine.gui.model.UIModel
 import com.tume.engine.util.{DisplayUtils, Bitmaps}
 
 /**
@@ -50,6 +51,20 @@ class UIButton extends UIComponent {
 
   override def init(): Unit = {
     super.init()
+    loadImage()
+  }
+
+  override def register(uIModel: UIModel): Unit = {
+    super.register(uIModel)
+    if (uIModel.icon.isDefined) {
+      this.imageResource = uIModel.icon.get
+    } else {
+      this.imageResource = -1
+    }
+    loadImage()
+  }
+
+  def loadImage(): Unit = {
     image = imageResource match {
       case -1 => None
       case x => Some(Bitmaps.get(x))

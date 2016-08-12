@@ -3,7 +3,7 @@ package com.tume.engine
 import android.graphics.{Paint, Canvas}
 import android.view.View
 import com.tume.engine.effect.{RenderableEffect, EffectSystem}
-import com.tume.engine.gui.{UISystem, UIView}
+import com.tume.engine.gui.{UIComponent, UISystem, UIView}
 import com.tume.engine.gui.event.{UIEvent, UIEventListener}
 import com.tume.engine.model.Border.Border
 import com.tume.engine.model.Border.Border
@@ -16,6 +16,8 @@ import scala.collection.immutable.HashMap
   * Created by tume on 5/12/16.
   */
 trait Game extends UIEventListener {
+
+  private var idCounter = 0L
 
   var uiSystem : UISystem = null
   var effectSystem: EffectSystem = null
@@ -94,6 +96,8 @@ trait Game extends UIEventListener {
 
   def onUIEvent(event: UIEvent)
 
-  def findUIComponent(id: String) = uiSystem.findComponent(id)
+  def findUIComponent[T <: UIComponent](id: String) = uiSystem.findComponent[T](id)
+
+  def uniqueId: Long = { this.idCounter += 1; this.idCounter }
 
 }

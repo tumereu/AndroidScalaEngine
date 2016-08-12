@@ -4,6 +4,7 @@ import android.graphics
 import android.graphics._
 import com.tume.engine.Input
 import com.tume.engine.gui.event.{UIEvent, UIEventListener}
+import com.tume.engine.gui.model.UIModel
 import com.tume.engine.model.{RichString, Vec2, Shape, Rect}
 import com.tume.engine.util._
 
@@ -91,6 +92,10 @@ abstract class UIComponent {
         innerState
       }
     }
+  }
+
+  def register(uIModel: UIModel): Unit = {
+    this.tooltip = uIModel.tooltip
   }
 
   def toggleVisibility(boolean: Boolean): Unit = {

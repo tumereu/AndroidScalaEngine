@@ -11,6 +11,8 @@ import com.tume.engine.util.L
   */
 class UISystem {
 
+  private var componentsById = Map[String, UIComponent]()
+
   var components = Map[String, Vector[UIComponent]]()
   var activeComponents = Vector[UIComponent]()
 
@@ -88,15 +90,23 @@ class UISystem {
     }
   }
 
-  def findComponent(id: String) : Option[UIComponent] = {
-    var found : Option[UIComponent] = None
-    for (c <- this.components.values.flatten) {
-      val f = c.find(id)
-      if (f.isDefined) {
-        found = f
+  def findComponent[T <: UIComponent](id: String) : T = {
+    var found = componentsById.get(id)
+    if (found.isEmpty) {
+      for (c <- this.components.values.flatten) {
+        val f = c.find(id)
+        if (f.isDefined) {
+          found = f
+        }
+      }
+      if (found.isDefined) {
+        componentsById += id -> found.get
       }
     }
-    found
+    found match {
+      case Some(o) => o.asInstanceOf[T]
+      case _ => throw new RuntimeException("No ui component was found with id " + id)
+    }
   }
 
   def isReceivingInput(uIComponent: UIComponent): Boolean = {

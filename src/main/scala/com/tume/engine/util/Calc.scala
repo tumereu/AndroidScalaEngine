@@ -28,6 +28,8 @@ object Calc {
   def abs(f: Float) = if (f < 0) -f else f
   def sqrt(f: Float) = Math.sqrt(f).toFloat
 
+  def clean(ff: Float, decimals: Int) : String = "" + ("%."+decimals+"f").format(ff)
+
   def toDegrees(f: Float) = f * 180 / PI
   def toRadians(f: Float) = f * PI / 180
 
