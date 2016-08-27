@@ -23,7 +23,7 @@ class UIButton extends UIComponent {
       case Pressed => UITheme.fillPaintPressed
       case Disabled => UITheme.fillPaintDisabled
       case _ if bgColor.isDefined => { val p = new Paint(); p.setColor(bgColor.get); p.setStyle(Paint.Style.FILL); p}
-      case _ => UITheme.shade(UITheme.fillPaintNormalBright.getColor, UITheme.fillPaintNormal.getColor, this)
+      case _ => UITheme.shade(UITheme.fillPaintButtonTop.getColor, UITheme.fillPaintButtonDown.getColor, this)
     }
     val borderPaint = state match {
       case Disabled => UITheme.borderPaintDisabled

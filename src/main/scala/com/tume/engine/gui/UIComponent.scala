@@ -98,8 +98,13 @@ abstract class UIComponent {
     this.tooltip = uIModel.tooltip
   }
 
+  def unregisterModel(): Unit = {
+    this.register(new UIModel {})
+  }
+
   def toggleVisibility(boolean: Boolean): Unit = {
     this.visible = boolean
+    this.tooltipRequested = false
   }
 
   def onViewShow(): Unit = {
@@ -112,21 +117,23 @@ abstract class UIComponent {
 
   def interactable = visible && enabled && uiSystem.isReceivingInput(this)
 
-  def update(delta: Float): Unit = {
-    if (Input.tap(boundingBox) && visible) {
-      onClick()
-    }
-    if (Input.touching(boundingBox) && visible) {
-      this.innerState = Pressed
-      UIFocus.currentFocus = Some(this)
-      if (Input.touchStarted(boundingBox)) {
-        onTouch()
+  def update(delta: Float, onTop: Boolean): Unit = {
+    if (onTop) {
+      if (Input.tap(boundingBox) && visible) {
+        onClick()
       }
-    } else {
-      this.innerState = Normal
-    }
-    if (Input.longPress(boundingBox)) {
-      tooltipRequested = true
+      if (Input.touching(boundingBox) && visible) {
+        this.innerState = Pressed
+        UIFocus.currentFocus = Some(this)
+        if (Input.touchStarted(boundingBox)) {
+          onTouch()
+        }
+      } else {
+        this.innerState = Normal
+      }
+      if (Input.longPress(boundingBox)) {
+        tooltipRequested = true
+      }
     }
   }
 
@@ -175,10 +182,11 @@ object UITheme {
   val borderPaintDisabled = create(0xff454545, Paint.Style.FILL, 2 * DisplayUtils.scale)
   val borderPaintPanel = create(0xff339999, Paint.Style.FILL)
 
-  val fillPaintNormal = create(0xffAA6600, Paint.Style.FILL)
-  val fillPaintNormalBright = create(0xffCC9933, Paint.Style.FILL)
+  val fillPaintButtonDown = create(0xffAA6600, Paint.Style.FILL)
+  val fillPaintButtonTop = create(0xffCC9933, Paint.Style.FILL)
   val fillPaintDisabled = create(0xff898989, Paint.Style.FILL)
   val fillPaintPressed = create(0xff996699, Paint.Style.FILL)
+
   val fillPaintPanel = create(0xff606060, Paint.Style.FILL)
 
   val tooltipBorderPaint = create(0xffffffff, Paint.Style.FILL)

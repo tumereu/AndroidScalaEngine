@@ -7,8 +7,8 @@ import com.tume.engine.gui.builder.UIBuilder
   */
 trait UIView {
 
-  def name: String
-  def build : Seq[UIBuilder]
+  def name: String = getClass.getSimpleName
+  def build : Seq[UIBuilder[_ <: UIComponent]]
 
   def bottom = UIBuilder(new UISpace()).bottom()
   def top = UIBuilder(new UISpace()).top()

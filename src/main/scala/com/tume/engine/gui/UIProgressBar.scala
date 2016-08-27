@@ -74,8 +74,8 @@ class UIProgressBar extends UIComponent {
 
   def progress = if (rawProgress.isDefined) rawProgress.get else if (denominator != 0) numerator.toFloat / denominator else 1f
 
-  override def update(delta: Float): Unit = {
-    super.update(delta)
+  override def update(delta: Float, onTop: Boolean): Unit = {
+    super.update(delta, onTop)
     for (t <- this.ticks) t.fade -= delta.toFloat
     this.ticks = this.ticks.filterNot(_.fade <= 0)
     val diff = (overFlows + this.progress - this.paintProgress) * Calc.clamp(delta * 5, 0f, 1f)

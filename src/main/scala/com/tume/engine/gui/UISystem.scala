@@ -3,6 +3,7 @@ package com.tume.engine.gui
 import android.graphics.Canvas
 import android.util.Log
 import com.tume.engine.Input
+import com.tume.engine.gui.builder.UIRadioButtonBuilder
 import com.tume.engine.gui.event.UIEventListener
 import com.tume.engine.util.L
 
@@ -20,8 +21,17 @@ class UISystem {
 
   def init(views: Seq[UIView], listener: UIEventListener): Unit = {
     for (v <- views) {
+      val built = v.build
       val vec = Vector.newBuilder[UIComponent]
-      for (builder <- v.build) {
+      for (builder <- built) {
+        builder match {
+          case a: UIRadioButtonBuilder => {
+            built.collect {
+              case b: UIRadioButtonBuilder => b
+            }.filter(_.group == a.group).foreach(_.link(a))
+          }
+          case _ =>
+        }
         vec += builder.resolve
       }
       val vecRes = vec.result()
@@ -52,7 +62,14 @@ class UISystem {
     }
     for (cmp <- components.values.flatten) {
       try {
-        cmp.update(delta)
+        var onTop = true
+        if (activePopups.nonEmpty) {
+          val a = activePopups.head
+          if (!a.contains(cmp)) {
+            onTop = false
+          }
+        }
+        cmp.update(delta, onTop)
       } catch {
         case e: Exception => {
           Log.e(getClass.toString, "Exception when updating ui component " + cmp.id.getOrElse("") + " :: " + cmp.getClass.getSimpleName, e)

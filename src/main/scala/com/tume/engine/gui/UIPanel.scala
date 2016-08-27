@@ -17,7 +17,7 @@ class UIPanel extends UIComponent {
   override def render(canvas: Canvas): Unit = {
     val fillPaint = this.state match {
       case Disabled => UITheme.fillPaintDisabled
-      case _ => UITheme.fillPaintNormalBright
+      case _ => UITheme.fillPaintButtonTop
     }
     val borderPaint = state match {
       case Disabled => UITheme.borderPaintDisabled

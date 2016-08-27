@@ -8,14 +8,14 @@ import com.tume.engine.gui.UIProgressBar
 class UIProgressBarBuilder extends UIBuilder(new UIProgressBar()){
 
   def main(int: Int, int2: Int) : this.type = {
-    uiComponent.asInstanceOf[UIProgressBar].mainColor = int
-    uiComponent.asInstanceOf[UIProgressBar].mainColorBright = int2
+    uiComponent.mainColor = int
+    uiComponent.mainColorBright = int2
     this
   }
 
   def tick(int: Int, int2: Int) : this.type = {
-    uiComponent.asInstanceOf[UIProgressBar].tickColor = int
-    uiComponent.asInstanceOf[UIProgressBar].tickColorBright = int2
+    uiComponent.tickColor = int
+    uiComponent.tickColorBright = int2
     this
   }
 }

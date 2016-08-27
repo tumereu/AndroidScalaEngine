@@ -8,6 +8,7 @@ import com.tume.engine.util.{Calc, Bitmaps, DisplayUtils}
   */
 class UILabel extends UIComponent {
 
+  var centerText = false
   var text = ""
   var iconResource = -1
   var textSize = -1
@@ -31,7 +32,8 @@ class UILabel extends UIComponent {
       p.setTextSize(if (textSize <= 0) height * 0.6f - DisplayUtils.scale * 2 else textSize)
       val bounds = new Rect()
       p.getTextBounds(text, 0, text.length, bounds)
-      canvas.drawText(text, iconWidth, height / 2 + bounds.height() / 2, p)
+      val offSet = if (centerText) (width - iconWidth - bounds.width()) / 2 else 0
+      canvas.drawText(text, iconWidth + offSet, height / 2 + bounds.height() / 2, p)
     }
   }
 

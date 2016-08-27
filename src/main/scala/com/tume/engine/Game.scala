@@ -3,12 +3,13 @@ package com.tume.engine
 import android.graphics.{Paint, Canvas}
 import android.view.View
 import com.tume.engine.effect.{RenderableEffect, EffectSystem}
-import com.tume.engine.gui.{UIComponent, UISystem, UIView}
+import com.tume.engine.gui.model.UIModel
+import com.tume.engine.gui._
 import com.tume.engine.gui.event.{UIEvent, UIEventListener}
 import com.tume.engine.model.Border.Border
 import com.tume.engine.model.Border.Border
 import com.tume.engine.model._
-import com.tume.engine.util.DisplayUtils
+import com.tume.engine.util.{L, DisplayUtils}
 
 import scala.collection.immutable.HashMap
 
@@ -94,10 +95,40 @@ trait Game extends UIEventListener {
 
   def views: Seq[UIView]
 
-  def onUIEvent(event: UIEvent)
+  def onUIEvent(event: UIEvent): Unit = {
+    uiSystem.activePopups.collect{ case a : UISelectionPopupPanel if a.id.isDefined => a }.foreach(p => {
+      event.id match {
+        case Some(s) => {
+          val start = p.id.get + "_button"
+          if (s.startsWith(start)) {
+            val i = s.drop(start.length).toInt + p.selectedPage * p.buttonAmount
+          } else if (s.contains("_page_")) {
+            if (s.endsWith("left")) {
+              p.prevPage()
+            } else {
+              p.nextPage()
+            }
+          }
+        }
+        case None =>
+      }
+    })
+  }
+
+  def showSelectionPopup(id: String, seq: UIModel): Unit = {
+    val panel = findUIComponent[UISelectionPopupPanel](id)
+    panel.register(seq)
+    uiSystem.addPopup(panel)
+  }
 
   def findUIComponent[T <: UIComponent](id: String) = uiSystem.findComponent[T](id)
 
   def uniqueId: Long = { this.idCounter += 1; this.idCounter }
+
+  def showSelectionDialog(id: String, seq: Seq[UIModel]): Unit = {
+    val panel = findUIComponent[UISelectionPopupPanel](id)
+    panel.register(seq)
+    uiSystem.addPopup(panel)
+  }
 
 }

@@ -4,7 +4,7 @@ import android.graphics.Canvas
 import android.util.Log
 import com.tume.engine.anim.{Animation, LoopType, QuinticOutAnim, EmptyAnim}
 import com.tume.engine.gui.event.{UIEvent, UIEventListener}
-import com.tume.engine.util.DisplayUtils
+import com.tume.engine.util.{L, DisplayUtils}
 
 /**
   * Created by tume on 5/18/16.
@@ -74,9 +74,9 @@ class UIPopupPanel extends UIComponent {
     components.foreach(_.toggleEnabled(boolean))
   }
 
-  override def update(delta: Float): Unit = {
-    super.update(delta)
-    components.foreach(_.update(delta))
+  override def update(delta: Float, onTop: Boolean): Unit = {
+    super.update(delta, onTop)
+    components.foreach(_.update(delta, onTop))
   }
 
   def += (uIComponent: UIComponent): Unit = {
