@@ -9,5 +9,6 @@ trait UIModel {
 
   def tooltip = Option[String](null)
   def icon : Option[Int] = None
+  def bgColor: Option[Int] = None
 
 }

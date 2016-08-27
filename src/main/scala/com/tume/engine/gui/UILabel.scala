@@ -28,7 +28,7 @@ class UILabel extends UIComponent {
     iconWidth += DisplayUtils.scale * 1
     if (text.length > 0) {
       val p = UITheme.labelPaint
-      p.setTextSize(if (textSize <= 0) height * 0.7f - DisplayUtils.scale * 2 else textSize)
+      p.setTextSize(if (textSize <= 0) height * 0.6f - DisplayUtils.scale * 2 else textSize)
       val bounds = new Rect()
       p.getTextBounds(text, 0, text.length, bounds)
       canvas.drawText(text, iconWidth, height / 2 + bounds.height() / 2, p)

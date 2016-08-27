@@ -4,7 +4,7 @@ import android.graphics.{Rect, Paint, Bitmap, Canvas}
 import android.util.Log
 import com.tume.engine.gui.event.ButtonEvent
 import com.tume.engine.gui.model.UIModel
-import com.tume.engine.util.{DisplayUtils, Bitmaps}
+import com.tume.engine.util.{Calc, DisplayUtils, Bitmaps}
 
 /**
   * Created by tume on 5/12/16.
@@ -15,12 +15,14 @@ class UIButton extends UIComponent {
 
   var cornerText = ""
   var imageResource = -1
+  var bgColor: Option[Int] = None
   protected var image: Option[Bitmap] = None
 
   override def render(canvas: Canvas): Unit = {
     val fillPaint = this.state match {
       case Pressed => UITheme.fillPaintPressed
       case Disabled => UITheme.fillPaintDisabled
+      case _ if bgColor.isDefined => { val p = new Paint(); p.setColor(bgColor.get); p.setStyle(Paint.Style.FILL); p}
       case _ => UITheme.shade(UITheme.fillPaintNormalBright.getColor, UITheme.fillPaintNormal.getColor, this)
     }
     val borderPaint = state match {
@@ -31,8 +33,13 @@ class UIButton extends UIComponent {
     canvas.drawRoundRect(0, 0, width, height, UITheme.cornerRadius, UITheme.cornerRadius, borderPaint)
     canvas.drawRoundRect(b, b, width - b, height - b, UITheme.cornerRadius, UITheme.cornerRadius, fillPaint)
     if (image.isDefined) {
-      val b = image.get
-      canvas.drawBitmap(b, width / 2 - b.getScaledWidth(canvas) / 2, height / 2 - b.getScaledHeight(canvas) / 2, UITheme.bitmapPaint)
+      val bitmap = image.get
+      val scale = Calc.min(1f, Calc.min((width - b * 2) / bitmap.getWidth.toFloat, (height - b * 2) / bitmap.getHeight.toFloat))
+      canvas.save()
+      canvas.translate(width / 2, height / 2)
+      canvas.scale(scale, scale)
+      canvas.drawBitmap(bitmap, -bitmap.getWidth / 2, -bitmap.getHeight / 2, UITheme.bitmapPaint)
+      canvas.restore()
     }
     if (cornerText.length > 0) {
       val p = UITheme.textPaint
@@ -61,6 +68,7 @@ class UIButton extends UIComponent {
     } else {
       this.imageResource = -1
     }
+    this.bgColor = uIModel.bgColor
     loadImage()
   }
 
