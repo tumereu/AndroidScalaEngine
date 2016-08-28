@@ -102,6 +102,9 @@ trait Game extends UIEventListener {
           val start = p.id.get + "_button"
           if (s.startsWith(start)) {
             val i = s.drop(start.length).toInt + p.selectedPage * p.buttonAmount
+            if (onSelection(p.id.get, p.models(i), i)) {
+              p.onToBeRemoved()
+            }
           } else if (s.contains("_page_")) {
             if (s.endsWith("left")) {
               p.prevPage()
@@ -114,6 +117,8 @@ trait Game extends UIEventListener {
       }
     })
   }
+
+  def onSelection(id: String, uIModel: UIModel, index: Int): Boolean = true
 
   def showSelectionPopup(id: String, seq: UIModel): Unit = {
     val panel = findUIComponent[UISelectionPopupPanel](id)

@@ -25,8 +25,8 @@ abstract class UIComponent {
 
   var enabled = true
   var visible = true
-  private var tooltipRequested = false
-  def shouldRenderTooltip = tooltipRequested && tooltip.isDefined
+  private var tooltipRequested = 0
+  def shouldRenderTooltip = tooltipRequested > 0 && tooltip.isDefined
 
   var x, y, width, height = 0
 
@@ -75,17 +75,17 @@ abstract class UIComponent {
 
   def state : UIState = {
     if (!visible) {
-      tooltipRequested = false
+      tooltipRequested = 0
       Hidden
     } else if (!enabled) {
-      tooltipRequested = false
+      tooltipRequested = 0
       Disabled
     } else {
       if (this.innerState == Normal) {
         if (UIFocus.currentFocus.contains(this)) {
           Focused
         } else {
-          tooltipRequested = false
+          tooltipRequested = 0
           Normal
         }
       } else {
@@ -104,7 +104,7 @@ abstract class UIComponent {
 
   def toggleVisibility(boolean: Boolean): Unit = {
     this.visible = boolean
-    this.tooltipRequested = false
+    this.tooltipRequested = 0
   }
 
   def onViewShow(): Unit = {
@@ -118,9 +118,10 @@ abstract class UIComponent {
   def interactable = visible && enabled && uiSystem.isReceivingInput(this)
 
   def update(delta: Float, onTop: Boolean): Unit = {
-    if (onTop) {
-      if (Input.tap(boundingBox) && visible) {
-        onClick()
+    if (onTop && enabled) {
+      if (Input.tap(boundingBox) && visible && innerState == Pressed) {
+        if (tooltipRequested <= 1) { onClick(); tooltipRequested = 0 }
+        else tooltipRequested -= 1
       }
       if (Input.touching(boundingBox) && visible) {
         this.innerState = Pressed
@@ -132,7 +133,7 @@ abstract class UIComponent {
         this.innerState = Normal
       }
       if (Input.longPress(boundingBox)) {
-        tooltipRequested = true
+        tooltipRequested = 2
       }
     }
   }
