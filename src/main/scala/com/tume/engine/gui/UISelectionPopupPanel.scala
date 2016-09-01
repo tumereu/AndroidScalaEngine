@@ -45,7 +45,7 @@ class UISelectionPopupPanel extends UIPopupPanel {
         buttons(i).enabled = false
       }
     }
-    label.foreach(_.text = "Page " + (selectedPage + 1) + "/" + Calc.min(maxPages, 1))
+    label.foreach(_.text = "Page " + (selectedPage + 1) + "/" + Calc.max(maxPages, 1))
   }
 
   def nextPage(): Unit = {
