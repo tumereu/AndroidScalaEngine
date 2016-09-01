@@ -4,7 +4,7 @@ import android.support.v4.view.MotionEventCompat
 import android.util.Log
 import android.view.MotionEvent
 import com.tume.engine.model.{Shape, Vec2}
-import com.tume.engine.util.Calc
+import com.tume.engine.util.{L, Calc}
 
 /**
   * Created by tume on 5/12/16.

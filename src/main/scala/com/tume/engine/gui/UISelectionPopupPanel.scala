@@ -1,6 +1,7 @@
 package com.tume.engine.gui
 
 import com.tume.engine.gui.model.UIModel
+import com.tume.engine.util.Calc
 
 import scala.collection.mutable
 
@@ -44,7 +45,7 @@ class UISelectionPopupPanel extends UIPopupPanel {
         buttons(i).enabled = false
       }
     }
-    label.foreach(_.text = "Page " + (selectedPage + 1) + "/" + maxPages)
+    label.foreach(_.text = "Page " + (selectedPage + 1) + "/" + Calc.min(maxPages, 1))
   }
 
   def nextPage(): Unit = {

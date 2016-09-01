@@ -1,12 +1,14 @@
 package com.tume.engine
 
 import android.content.Context
+import android.graphics.Canvas
 import android.util.{Log, AttributeSet}
 import android.view.{View, SurfaceHolder, MotionEvent, SurfaceView}
 import com.tume.engine.util.DisplayUtils
 
-class GameView(ctx: Context, atSet: AttributeSet) extends SurfaceView(ctx, atSet) {
-  val surfaceHolder = getHolder
+class GameView(ctx: Context, atSet: AttributeSet) extends View(ctx, atSet) {
+
+  var renderCallback = (canvas: Canvas) => {}
 
   override def onTouchEvent(motionEvent: MotionEvent): Boolean = {
     Input.addEvent(motionEvent)
@@ -18,6 +20,11 @@ class GameView(ctx: Context, atSet: AttributeSet) extends SurfaceView(ctx, atSet
     DisplayUtils.screenWidth = xNew
     DisplayUtils.screenHeight = yNew
     DisplayUtils.screenSize = Math.min(xNew, yNew)
+  }
+
+  override def onDraw(canvas: Canvas): Unit = {
+    renderCallback(canvas)
+    this.invalidate()
   }
 
 }
