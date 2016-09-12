@@ -133,7 +133,7 @@ abstract class UIComponent {
         this.innerState = Normal
       }
       if (Input.longPress(boundingBox)) {
-        tooltipRequested = 2
+        tooltipRequested = if (tooltip.isEmpty) 0 else 2
       }
     }
   }
@@ -198,9 +198,11 @@ object UITheme {
   val textPaint = create(0xffaaceaa)
   val labelPaint = create(0xff000000)
 
+  def textPaint(color: Int) = create(color)
+
   val background = create(0xff666666, Paint.Style.FILL)
 
-  private def create(color: Int, style: Paint.Style = Paint.Style.FILL_AND_STROKE, strokeWidth: Float = DisplayUtils.scale, antialias: Boolean = true) : Paint = {
+  def create(color: Int, style: Paint.Style = Paint.Style.FILL_AND_STROKE, strokeWidth: Float = DisplayUtils.scale, antialias: Boolean = true) : Paint = {
     val paint = new Paint()
     paint.setColor(color)
     paint.setStyle(style)

@@ -3,7 +3,7 @@ package com.tume.engine.gui
 import android.graphics.{Rect, Paint, Bitmap, Canvas}
 import android.util.Log
 import com.tume.engine.gui.event.ButtonEvent
-import com.tume.engine.gui.model.UIModel
+import com.tume.engine.gui.model.{ButtonModel, UIModel}
 import com.tume.engine.util.{Calc, DisplayUtils, Bitmaps}
 
 /**
@@ -13,9 +13,11 @@ class UIButton extends UIComponent {
 
   import com.tume.engine.gui.UIState._
 
-  var cornerText = ""
+  var rightCornerText = Option[(String, Int)](null)
+  var leftCornerText = Option[(String, Int)](null)
   var imageResource = -1
   var bgColor: Option[Int] = None
+  var instant = false
   protected var image: Option[Bitmap] = None
 
   override def render(canvas: Canvas): Unit = {
@@ -41,12 +43,19 @@ class UIButton extends UIComponent {
       canvas.drawBitmap(bitmap, -bitmap.getWidth / 2, -bitmap.getHeight / 2, UITheme.bitmapPaint)
       canvas.restore()
     }
-    if (cornerText.length > 0) {
-      val p = UITheme.textPaint
-      p.setTextSize(DisplayUtils.scale * 15)
+    if (rightCornerText.isDefined) {
+      val p = UITheme.textPaint(rightCornerText.get._2)
+      p.setTextSize(DisplayUtils.scale * 10)
       val bounds = new Rect()
-      p.getTextBounds(cornerText, 0, cornerText.length, bounds)
-      canvas.drawText(cornerText, width - b * 3 - bounds.width(), b * 3 + bounds.height(), p)
+      p.getTextBounds(rightCornerText.get._1, 0, rightCornerText.get._1.length, bounds)
+      canvas.drawText(rightCornerText.get._1, width - b * 3 - bounds.width(), b * 3 + bounds.height(), p)
+    }
+    if (leftCornerText.isDefined) {
+      val p = UITheme.textPaint(leftCornerText.get._2)
+      p.setTextSize(DisplayUtils.scale * 10)
+      val bounds = new Rect()
+      p.getTextBounds(leftCornerText.get._1, 0, leftCornerText.get._1.length, bounds)
+      canvas.drawText(leftCornerText.get._1, b * 3, b * 3 + bounds.height(), p)
     }
   }
 
@@ -54,7 +63,8 @@ class UIButton extends UIComponent {
     throwEvent(ButtonEvent())
   }
 
-  override def onClick(): Unit = onPress()
+  override def onTouch(): Unit = if (instant) onPress()
+  override def onClick(): Unit = if (!instant) onPress()
 
   override def init(): Unit = {
     super.init()
@@ -69,6 +79,13 @@ class UIButton extends UIComponent {
       this.imageResource = -1
     }
     this.bgColor = uIModel.bgColor
+    uIModel match {
+      case b : ButtonModel => {
+        leftCornerText = b.leftCornerText
+        rightCornerText = b.rightCornerText
+      }
+      case _ => rightCornerText = None; leftCornerText = None
+    }
     loadImage()
   }
 

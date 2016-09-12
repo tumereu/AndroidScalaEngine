@@ -169,7 +169,6 @@ object UIBuilder {
   def space = UIBuilder(new UISpace())
   def panel = UIBuilder(new UIPanel())
   def label = new UILabelBuilder()
-  def instantButton = new UIButtonBuilder(new UIInstantButton())
   def radioButton = new UIRadioButtonBuilder()
   def panelButton = new UIButtonBuilder(new UIPanelToggleButton())
   def progressBar = new UIProgressBarBuilder()

@@ -4,12 +4,14 @@ import android.support.v4.view.MotionEventCompat
 import android.util.Log
 import android.view.MotionEvent
 import com.tume.engine.model.{Shape, Vec2}
-import com.tume.engine.util.{L, Calc}
+import com.tume.engine.util.{DisplayUtils, L, Calc}
 
 /**
   * Created by tume on 5/12/16.
   */
 object Input  {
+
+  val fingerSize = 60f * DisplayUtils.scale
 
   private var touchLocations = Vector[Touch]()
   private var oldTouchLocations = Vector[Touch]()
@@ -44,6 +46,12 @@ object Input  {
     */
   def touchStarted(shape: Shape) : Boolean = newPointers.exists(p => shape.contains(p.startLoc.get))
   def touchStarted : Boolean = newPointers.nonEmpty
+
+  /**
+    * Returns true if a touch started inside the shape and ended there this frame
+    */
+  def touchLifted(shape: Shape) : Boolean = removedTouches.exists(p => shape.contains(p.startLoc.get) && shape.contains(p.loc))
+  def touchLifted : Boolean = removedTouches.nonEmpty
 
   /**
     * Returns true if someone is constantly touching a shape. This requires that the touch both started
@@ -176,7 +184,7 @@ class Touch(i: Int) {
     }
     prevLoc = currentLoc
     currentLoc = Some(vec)
-    if (startLoc.get.dist(currentLoc.get) > 35f) {
+    if (startLoc.get.dist(currentLoc.get) > 40f * DisplayUtils.scale ) {
       drag = true
     }
   }

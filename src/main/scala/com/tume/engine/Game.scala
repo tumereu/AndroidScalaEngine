@@ -136,4 +136,8 @@ trait Game extends UIEventListener {
     uiSystem.addPopup(panel)
   }
 
+  def onBackPressed(): Unit = {
+    System.exit(0)
+  }
+
 }

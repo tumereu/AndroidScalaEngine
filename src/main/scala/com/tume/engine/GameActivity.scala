@@ -63,4 +63,8 @@ abstract class GameActivity extends AppCompatActivity {
     thread.start()
   }
 
+  override def onBackPressed(): Unit = {
+    game.onBackPressed()
+  }
+
 }
